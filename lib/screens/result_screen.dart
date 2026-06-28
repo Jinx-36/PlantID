@@ -25,15 +25,11 @@ class ResultScreen extends ConsumerStatefulWidget {
 }
 
 class _ResultScreenState extends ConsumerState<ResultScreen> {
-  bool _isSaved = false;
-
   @override
   void initState() {
     super.initState();
     if (widget.existingRecord == null) {
       Future.microtask(() => ref.read(scanProvider.notifier).identifyPlant(widget.imagePath));
-    } else {
-      _isSaved = true;
     }
   }
 
@@ -237,36 +233,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     ],
                   ),
                   const SizedBox(height: 32),
-                  if (!_isSaved)
-                    ElevatedButton(
-                      onPressed: () async {
-                        final savedPath = await ImageService.saveImageToDocs(widget.imagePath);
-                        final scanState = ref.read(scanProvider);
-                        final record = ScanRecord(
-                          commonName: commonName,
-                          scientificName: scientificName,
-                          confidence: confidence,
-                          imagePath: savedPath,
-                          careAdvice: scanState.careAdvice!,
-                          scannedAt: DateTime.now(),
-                        );
-                        await ref.read(historyProvider.notifier).addScan(record);
-                        setState(() => _isSaved = true);
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Saved to history')),
-                          );
-                        }
-                      },
-                      child: const Text('Save to History'),
-                    )
-                  else
-                    const Center(
-                      child: Text(
-                        'Saved to History',
-                        style: TextStyle(color: AppTheme.success, fontWeight: FontWeight.bold),
-                      ),
+                  const Center(
+                    child: Text(
+                      'Saved to History',
+                      style: TextStyle(color: AppTheme.success, fontWeight: FontWeight.bold),
                     ),
+                  ),
                 ],
               ),
             ),
