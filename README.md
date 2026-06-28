@@ -15,14 +15,14 @@ PlantID is a clean, modern Flutter application that allows you to identify plant
 ## 🛠 Setup & Installation
 
 ### 1. Prerequisites
-- **Flutter SDK**: [Install Flutter](https://docs.flutter.dev/get-started/install)
-- **Dart SDK**: Included with Flutter.
-- **Android Studio / Xcode**: For mobile development.
+- **Flutter SDK**: [Install Flutter](https://docs.flutter.dev/get-started/install). Ensure you are on the `stable` channel.
+- **Java**: Java 17 is required for Android builds.
+- **Android Studio / Xcode**: Required for mobile development and emulators.
 
 ### 2. Clone the Repository
 ```bash
-git clone <repository-url>
-cd plantid
+git clone https://github.com/Jinx-36/PlantID.git
+cd PlantID
 ```
 
 ### 3. Install Dependencies
@@ -40,14 +40,14 @@ If you want to use your own:
 
 ## 📱 Running the App
 
-### Launch on Web
+### Launch on Web (Chrome)
 ```bash
 flutter run -d chrome
 ```
 
 ### Launch on Android (Emulator or Physical Device)
 ```bash
-flutter run
+flutter run -d android
 ```
 
 ---
@@ -58,16 +58,35 @@ To generate an APK file that you can install on your phone:
 
 1. **Build the APK**:
    ```bash
-   flutter build apk --release
+   flutter build apk --debug
    ```
+   *(Note: Using `--debug` for easier initial testing. Use `--release` for production, which requires signing.)*
+
 2. **Locate the file**:
-   The generated file will be at `build/app/outputs/flutter-apk/app-release.apk`.
+   The generated file will be at `build/app/outputs/flutter-apk/app-debug.apk`.
 
 ### How to install on your phone:
-1. Transfer the `app-release.apk` file to your phone (via USB, Google Drive, etc.).
-2. On your phone, open the file.
-3. If prompted, allow "Installation from unknown sources" in your settings.
-4. Follow the prompts to install.
+1. Transfer the `app-debug.apk` file to your phone (via USB, Google Drive, email, etc.).
+2. On your phone, open a File Manager and find the APK.
+3. Tap the APK to install.
+4. **Important**: If prompted, allow "Installation from unknown sources" or "Trust this source" in your Android settings.
+5. Launch "PlantID" from your app drawer.
+
+---
+
+## 🛠 Troubleshooting
+
+### Dependency Errors
+If you see errors like `The argument type '...' can't be assigned to the parameter type '...'`, ensure your dependencies are up to date:
+```bash
+flutter pub upgrade
+```
+
+### Android Build Issues
+Ensure your `JAVA_HOME` points to Java 17. You can check your version with:
+```bash
+java -version
+```
 
 ---
 
