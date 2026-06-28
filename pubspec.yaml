@@ -12,8 +12,8 @@ dependencies:
   flutter_riverpod: ^2.4.9
   dio: ^5.4.0
   camera: ^0.10.5+5
-  image_picker: ^1.0.7
-  flutter_image_compress: ^2.1.0
+  image_picker: ^1.1.2
+  flutter_image_compress: ^2.3.0
   sqflite: ^2.3.0
   path: ^1.8.3
   cached_network_image: ^3.3.0

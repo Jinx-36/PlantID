@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:plantid/core/theme.dart';
 import 'package:plantid/providers/connectivity_provider.dart';
+import 'package:plantid/providers/scan_provider.dart';
 import 'package:plantid/screens/camera_screen.dart';
 import 'package:plantid/screens/result_screen.dart';
 import 'package:plantid/widgets/offline_banner.dart';
@@ -18,6 +19,27 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
+  bool _isProcessing = false;
+
+  Future<void> _navigateToResult(String imagePath) async {
+    setState(() => _isProcessing = true);
+
+    // Reset scan provider state before starting new identification
+    ref.read(scanProvider.notifier).reset();
+
+    if (mounted) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ResultScreen(imagePath: imagePath),
+        ),
+      );
+    }
+
+    if (mounted) {
+      setState(() => _isProcessing = false);
+    }
+  }
 
   Future<void> _handleScan(BuildContext context) async {
     showModalBottomSheet(
@@ -41,12 +63,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       MaterialPageRoute(builder: (_) => const CameraScreen()),
                     );
                     if (result != null && mounted) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ResultScreen(imagePath: result as String),
-                        ),
-                      );
+                      _navigateToResult(result as String);
                     }
                   }
                 } else if (status.isPermanentlyDenied) {
@@ -63,12 +80,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 if (status.isGranted || status.isLimited) {
                   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
                   if (image != null && mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ResultScreen(imagePath: image.path),
-                      ),
-                    );
+                    _navigateToResult(image.path);
                   }
                 } else if (status.isPermanentlyDenied) {
                   _showPermissionDialog();
@@ -110,57 +122,78 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final isOffline = connectivity.value == ConnectivityStatus.isDisconnected;
 
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          if (isOffline) const OfflineBanner(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: const Icon(
-                      Icons.eco,
-                      size: 80,
-                      color: Colors.white,
-                    ),
+          Column(
+            children: [
+              if (isOffline) const OfflineBanner(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryGreen,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: const Icon(
+                          Icons.eco,
+                          size: 80,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      const Text(
+                        'PlantID',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Point. Identify. Grow.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: AppTheme.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      Tooltip(
+                        message: isOffline ? 'Internet connection required to scan' : '',
+                        child: ElevatedButton(
+                          onPressed: isOffline ? null : () => _handleScan(context),
+                          child: const Text('Scan a Plant'),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 40),
-                  const Text(
-                    'PlantID',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          if (_isProcessing)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(color: Colors.white),
+                    SizedBox(height: 16),
+                    Text(
+                      'Processing image...',
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Point. Identify. Grow.',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: AppTheme.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 60),
-                  Tooltip(
-                    message: isOffline ? 'Internet connection required to scan' : '',
-                    child: ElevatedButton(
-                      onPressed: isOffline ? null : () => _handleScan(context),
-                      child: const Text('Scan a Plant'),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

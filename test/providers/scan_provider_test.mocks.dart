@@ -3,13 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i8;
 import 'package:plantid/models/care_advice.dart' as _i2;
-import 'package:plantid/models/plant_result.dart' as _i5;
-import 'package:plantid/services/openfarm_service.dart' as _i6;
-import 'package:plantid/services/plantnet_service.dart' as _i3;
+import 'package:plantid/models/plant_result.dart' as _i6;
+import 'package:plantid/services/openfarm_service.dart' as _i7;
+import 'package:plantid/services/plantnet_service.dart' as _i4;
+import 'package:riverpod/src/internals.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -36,46 +38,299 @@ class _FakeCareAdvice_0 extends _i1.SmartFake implements _i2.CareAdvice {
         );
 }
 
+class _FakeProviderContainer_1 extends _i1.SmartFake
+    implements _i3.ProviderContainer {
+  _FakeProviderContainer_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeKeepAliveLink_2 extends _i1.SmartFake implements _i3.KeepAliveLink {
+  _FakeKeepAliveLink_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeProviderSubscription_3<State1> extends _i1.SmartFake
+    implements _i3.ProviderSubscription<State1> {
+  _FakeProviderSubscription_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [PlantNetService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPlantNetService extends _i1.Mock implements _i3.PlantNetService {
+class MockPlantNetService extends _i1.Mock implements _i4.PlantNetService {
   MockPlantNetService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i5.PlantResult?> identifyPlant(String? imagePath) =>
+  _i5.Future<_i6.PlantResult?> identifyPlant(String? imagePath) =>
       (super.noSuchMethod(
         Invocation.method(
           #identifyPlant,
           [imagePath],
         ),
-        returnValue: _i4.Future<_i5.PlantResult?>.value(),
-      ) as _i4.Future<_i5.PlantResult?>);
+        returnValue: _i5.Future<_i6.PlantResult?>.value(),
+      ) as _i5.Future<_i6.PlantResult?>);
 }
 
 /// A class which mocks [OpenFarmService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockOpenFarmService extends _i1.Mock implements _i6.OpenFarmService {
+class MockOpenFarmService extends _i1.Mock implements _i7.OpenFarmService {
   MockOpenFarmService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.CareAdvice> getCareAdvice(String? plantName) =>
+  _i5.Future<_i2.CareAdvice> getCareAdvice(String? plantName) =>
       (super.noSuchMethod(
         Invocation.method(
           #getCareAdvice,
           [plantName],
         ),
-        returnValue: _i4.Future<_i2.CareAdvice>.value(_FakeCareAdvice_0(
+        returnValue: _i5.Future<_i2.CareAdvice>.value(_FakeCareAdvice_0(
           this,
           Invocation.method(
             #getCareAdvice,
             [plantName],
           ),
         )),
-      ) as _i4.Future<_i2.CareAdvice>);
+      ) as _i5.Future<_i2.CareAdvice>);
+}
+
+/// A class which mocks [Ref].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockRef<State extends Object?> extends _i1.Mock
+    implements _i3.Ref<State> {
+  MockRef() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.ProviderContainer get container => (super.noSuchMethod(
+        Invocation.getter(#container),
+        returnValue: _FakeProviderContainer_1(
+          this,
+          Invocation.getter(#container),
+        ),
+      ) as _i3.ProviderContainer);
+
+  @override
+  T refresh<T>(_i3.Refreshable<T>? provider) => (super.noSuchMethod(
+        Invocation.method(
+          #refresh,
+          [provider],
+        ),
+        returnValue: _i8.dummyValue<T>(
+          this,
+          Invocation.method(
+            #refresh,
+            [provider],
+          ),
+        ),
+      ) as T);
+
+  @override
+  void invalidate(_i3.ProviderOrFamily? provider) => super.noSuchMethod(
+        Invocation.method(
+          #invalidate,
+          [provider],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+        Invocation.method(
+          #notifyListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void listenSelf(
+    void Function(
+      State?,
+      State,
+    )? listener, {
+    void Function(
+      Object,
+      StackTrace,
+    )? onError,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #listenSelf,
+          [listener],
+          {#onError: onError},
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void invalidateSelf() => super.noSuchMethod(
+        Invocation.method(
+          #invalidateSelf,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void onAddListener(void Function()? cb) => super.noSuchMethod(
+        Invocation.method(
+          #onAddListener,
+          [cb],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void onRemoveListener(void Function()? cb) => super.noSuchMethod(
+        Invocation.method(
+          #onRemoveListener,
+          [cb],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void onResume(void Function()? cb) => super.noSuchMethod(
+        Invocation.method(
+          #onResume,
+          [cb],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void onCancel(void Function()? cb) => super.noSuchMethod(
+        Invocation.method(
+          #onCancel,
+          [cb],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void onDispose(void Function()? cb) => super.noSuchMethod(
+        Invocation.method(
+          #onDispose,
+          [cb],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  T read<T>(_i3.ProviderListenable<T>? provider) => (super.noSuchMethod(
+        Invocation.method(
+          #read,
+          [provider],
+        ),
+        returnValue: _i8.dummyValue<T>(
+          this,
+          Invocation.method(
+            #read,
+            [provider],
+          ),
+        ),
+      ) as T);
+
+  @override
+  bool exists(_i3.ProviderBase<Object?>? provider) => (super.noSuchMethod(
+        Invocation.method(
+          #exists,
+          [provider],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  T watch<T>(_i3.ProviderListenable<T>? provider) => (super.noSuchMethod(
+        Invocation.method(
+          #watch,
+          [provider],
+        ),
+        returnValue: _i8.dummyValue<T>(
+          this,
+          Invocation.method(
+            #watch,
+            [provider],
+          ),
+        ),
+      ) as T);
+
+  @override
+  _i3.KeepAliveLink keepAlive() => (super.noSuchMethod(
+        Invocation.method(
+          #keepAlive,
+          [],
+        ),
+        returnValue: _FakeKeepAliveLink_2(
+          this,
+          Invocation.method(
+            #keepAlive,
+            [],
+          ),
+        ),
+      ) as _i3.KeepAliveLink);
+
+  @override
+  _i3.ProviderSubscription<T> listen<T>(
+    _i3.ProviderListenable<T>? provider,
+    void Function(
+      T?,
+      T,
+    )? listener, {
+    void Function(
+      Object,
+      StackTrace,
+    )? onError,
+    bool? fireImmediately,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listen,
+          [
+            provider,
+            listener,
+          ],
+          {
+            #onError: onError,
+            #fireImmediately: fireImmediately,
+          },
+        ),
+        returnValue: _FakeProviderSubscription_3<T>(
+          this,
+          Invocation.method(
+            #listen,
+            [
+              provider,
+              listener,
+            ],
+            {
+              #onError: onError,
+              #fireImmediately: fireImmediately,
+            },
+          ),
+        ),
+      ) as _i3.ProviderSubscription<T>);
 }
