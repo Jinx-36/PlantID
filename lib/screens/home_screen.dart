@@ -76,14 +76,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: const Text('Choose from Gallery'),
               onTap: () async {
                 Navigator.pop(context);
-                final status = await Permission.photos.request();
+
+                PermissionStatus status;
+                if (Platform.isAndroid) {
+                  // For Android 13+ we should check READ_MEDIA_IMAGES
+                  status = await Permission.photos.request();
+                  if (status.isDenied) {
+                    // Fallback for older Android
+                    status = await Permission.storage.request();
+                  }
+                } else {
+                  status = await Permission.photos.request();
+                }
+
                 if (status.isGranted || status.isLimited) {
-                  final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-                  if (image != null && mounted) {
-                    _navigateToResult(image.path);
+                  try {
+                    final XFile? image = await _picker.pickImage(
+                      source: ImageSource.gallery,
+                      maxWidth: 1800,
+                      maxHeight: 1800,
+                      imageQuality: 85,
+                    );
+                    if (image != null && mounted) {
+                      _navigateToResult(image.path);
+                    }
+                  } catch (e) {
+                    debugPrint('Error picking image: $e');
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error picking image: $e')),
+                      );
+                    }
                   }
                 } else if (status.isPermanentlyDenied) {
                   _showPermissionDialog();
+                } else {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Gallery permission denied')),
+                    );
+                  }
                 }
               },
             ),
