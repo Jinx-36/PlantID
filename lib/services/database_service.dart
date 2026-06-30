@@ -41,12 +41,6 @@ class DatabaseService {
       )
     ''');
 
-    await db.execute('''
-      CREATE TABLE ${AppConstants.tableCareCache} (
-        plant_name TEXT PRIMARY KEY,
-        care_json TEXT NOT NULL
-      )
-    ''');
   }
 
   Future<int> insertScan(ScanRecord scan) async {
@@ -66,45 +60,6 @@ class DatabaseService {
       AppConstants.tableScanHistory,
       where: 'id = ?',
       whereArgs: [id],
-    );
-  }
-
-  Future<CareAdvice?> getCachedCareAdvice(String plantName) async {
-    final db = await instance.database;
-    final results = await db.query(
-      AppConstants.tableCareCache,
-      where: 'plant_name = ?',
-      whereArgs: [plantName.toLowerCase()],
-    );
-
-    if (results.isNotEmpty) {
-      final json = jsonDecode(results.first['care_json'] as String);
-
-      // Ignore corrupted cache data (fallback values)
-      if (json['watering'] == 'Unknown') {
-        return null;
-      }
-
-      return CareAdvice(
-        name: json['name'],
-        description: json['description'],
-        watering: json['watering'],
-        sunlight: json['sunlight'],
-        soil: json['soil'],
-      );
-    }
-    return null;
-  }
-
-  Future<void> cacheCareAdvice(String plantName, CareAdvice care) async {
-    final db = await instance.database;
-    await db.insert(
-      AppConstants.tableCareCache,
-      {
-        'plant_name': plantName.toLowerCase(),
-        'care_json': jsonEncode(care.toJson()),
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 

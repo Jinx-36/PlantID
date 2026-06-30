@@ -56,27 +56,4 @@ void main() {
     expect(results.length, 1);
     expect(results.first['common_name'], 'Test Plant');
   });
-
-  test('Database cache insert and read', () async {
-    final care = CareAdvice(
-      name: 'Cached Plant',
-      description: 'Desc',
-      watering: 'Water',
-      sunlight: 'Sun',
-      soil: 'Soil',
-    );
-
-    await db.insert(AppConstants.tableCareCache, {
-      'plant_name': 'test plant',
-      'care_json': '{"name":"Cached Plant","description":"Desc","watering":"Water","sunlight":"Sun","soil":"Soil"}',
-    });
-
-    final results = await db.query(
-      AppConstants.tableCareCache,
-      where: 'plant_name = ?',
-      whereArgs: ['test plant'],
-    );
-    expect(results.length, 1);
-    expect(results.first['plant_name'], 'test plant');
-  });
 }
