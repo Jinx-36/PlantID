@@ -218,18 +218,26 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: 2,
+                  ListView(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 1.5,
                     children: [
-                      CareTile(title: 'Watering', value: watering, icon: Icons.water_drop_outlined),
-                      CareTile(title: 'Sunlight', value: sunlight, icon: Icons.wb_sunny_outlined),
-                      CareTile(title: 'Soil', value: soil, icon: Icons.terrain_outlined),
-                      CareTile(title: 'Description', value: description, icon: Icons.info_outline),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: CareTile(title: 'Watering', value: watering, icon: Icons.water_drop_outlined),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: CareTile(title: 'Sunlight', value: sunlight, icon: Icons.wb_sunny_outlined),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: CareTile(title: 'Soil', value: soil, icon: Icons.terrain_outlined),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: CareTile(title: 'Description', value: description, icon: Icons.info_outline),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 32),
