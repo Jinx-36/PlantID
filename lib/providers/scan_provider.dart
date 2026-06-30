@@ -54,8 +54,10 @@ class ScanNotifier extends StateNotifier<ScanState> {
       if (careAdvice == null) {
         // Fetch from Gemini if not in cache
         careAdvice = await _geminiApiService.getCareAdvice(plantResult.commonName);
-        // Save to cache
-        await DatabaseService.instance.cacheCareAdvice(plantResult.commonName, careAdvice);
+        // Save to cache only if it's not a fallback result
+        if (careAdvice.watering != 'Unknown') {
+          await DatabaseService.instance.cacheCareAdvice(plantResult.commonName, careAdvice);
+        }
       }
 
       // Automatically save to history

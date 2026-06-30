@@ -79,6 +79,12 @@ class DatabaseService {
 
     if (results.isNotEmpty) {
       final json = jsonDecode(results.first['care_json'] as String);
+
+      // Ignore corrupted cache data (fallback values)
+      if (json['watering'] == 'Unknown') {
+        return null;
+      }
+
       return CareAdvice(
         name: json['name'],
         description: json['description'],
