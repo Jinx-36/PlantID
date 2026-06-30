@@ -28,6 +28,17 @@ class GeminiApiService {
           }],
           "generationConfig": {
             "responseMimeType": "application/json",
+            "responseSchema": {
+              "type": "OBJECT",
+              "properties": {
+                "name": {"type": "STRING"},
+                "description": {"type": "STRING"},
+                "watering": {"type": "STRING"},
+                "sunlight": {"type": "STRING"},
+                "soil": {"type": "STRING"}
+              },
+              "required": ["name", "description", "watering", "sunlight", "soil"]
+            }
           }
         },
       );
@@ -36,6 +47,9 @@ class GeminiApiService {
         final text = response.data['candidates'][0]['content']['parts'][0]['text'] as String;
         // Clean markdown formatting if present
         final cleanText = text.replaceAll(RegExp(r'```json\n?'), '').replaceAll('```', '').trim();
+
+        debugPrint('Gemini Raw Output: $cleanText');
+
         final Map<String, dynamic> json = jsonDecode(cleanText);
         return CareAdvice(
           name: json['name'] ?? plantName,
@@ -47,10 +61,10 @@ class GeminiApiService {
       }
       return CareAdvice.fallback();
     } on DioException catch (e) {
-      debugPrint('Gemini API Error: ${e.message}');
+      debugPrint('Gemini API Error: ${e.response?.data}');
       return CareAdvice.fallback();
     } catch (e) {
-      debugPrint('General Error: $e');
+      debugPrint('Parsing Error: $e');
       return CareAdvice.fallback();
     }
   }
