@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plantid/models/care_advice.dart';
 import 'package:plantid/models/plant_result.dart';
@@ -42,25 +43,17 @@ class ScanNotifier extends StateNotifier<ScanState> {
   Future<void> identifyPlant(String imagePath) async {
     state = ScanState.loading();
     try {
+      // 1. Identify plant with PlantNet
       final plantResult = await _plantNetService.identifyPlant(imagePath);
       if (plantResult == null) {
         state = ScanState.error("We couldn't identify this plant. Try a clearer photo.");
         return;
       }
 
-      // Check cache first
-      CareAdvice? careAdvice = await DatabaseService.instance.getCachedCareAdvice(plantResult.commonName);
+      // 2. Fetch care advice from Gemini (Fresh call every time)
+      final careAdvice = await _geminiApiService.getCareAdvice(plantResult.commonName);
 
-      if (careAdvice == null) {
-        // Fetch from Gemini if not in cache
-        careAdvice = await _geminiApiService.getCareAdvice(plantResult.commonName);
-        // Save to cache only if it's not a fallback result
-        if (careAdvice.watering != 'Unknown') {
-          await DatabaseService.instance.cacheCareAdvice(plantResult.commonName, careAdvice);
-        }
-      }
-
-      // Automatically save to history
+      // 3. Automatically save to history
       final savedPath = await ImageService.saveImageToDocs(imagePath);
       final record = ScanRecord(
         commonName: plantResult.commonName,
@@ -73,8 +66,10 @@ class ScanNotifier extends StateNotifier<ScanState> {
 
       await _ref.read(historyProvider.notifier).addScan(record);
 
+      // 4. Update state to success only after everything is complete
       state = ScanState.success(plantResult, careAdvice);
     } catch (e) {
+      debugPrint('Identification Error: $e');
       state = ScanState.error(e.toString().replaceAll('Exception: ', ''));
     }
   }

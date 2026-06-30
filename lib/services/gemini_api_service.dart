@@ -59,13 +59,25 @@ class GeminiApiService {
           soil: json['soil'] ?? 'Not specified',
         );
       }
-      return CareAdvice.fallback();
+      throw Exception('Failed to get care advice from Gemini');
     } on DioException catch (e) {
-      debugPrint('Gemini API Error: ${e.response?.data}');
-      return CareAdvice.fallback();
+      final errorData = e.response?.data;
+      debugPrint('Gemini API Error: $errorData');
+
+      String message = 'API Error';
+      if (errorData != null && errorData is Map) {
+        final error = errorData['error'];
+        if (error != null && error is Map) {
+          message = error['message'] ?? 'API Error';
+        }
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        message = 'Connection timed out';
+      }
+
+      throw Exception('Gemini API Error: $message');
     } catch (e) {
       debugPrint('Parsing Error: $e');
-      return CareAdvice.fallback();
+      throw Exception('Gemini Parsing Error: $e');
     }
   }
 }
