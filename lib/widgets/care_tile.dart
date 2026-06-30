@@ -45,8 +45,6 @@ class CareTile extends StatelessWidget {
               fontSize: 13,
               color: AppTheme.textSecondary,
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

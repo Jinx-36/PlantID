@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:plantid/core/constants.dart';
 import 'package:plantid/models/scan_record.dart';
+import 'package:plantid/models/care_advice.dart';
 
 class DatabaseService {
   static final DatabaseService instance = DatabaseService._init();
@@ -38,6 +40,13 @@ class DatabaseService {
         scanned_at TEXT NOT NULL
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE ${AppConstants.tableCareCache} (
+        plant_name TEXT PRIMARY KEY,
+        care_json TEXT NOT NULL
+      )
+    ''');
   }
 
   Future<int> insertScan(ScanRecord scan) async {
@@ -57,6 +66,39 @@ class DatabaseService {
       AppConstants.tableScanHistory,
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<CareAdvice?> getCachedCareAdvice(String plantName) async {
+    final db = await instance.database;
+    final results = await db.query(
+      AppConstants.tableCareCache,
+      where: 'plant_name = ?',
+      whereArgs: [plantName.toLowerCase()],
+    );
+
+    if (results.isNotEmpty) {
+      final json = jsonDecode(results.first['care_json'] as String);
+      return CareAdvice(
+        name: json['name'],
+        description: json['description'],
+        watering: json['watering'],
+        sunlight: json['sunlight'],
+        soil: json['soil'],
+      );
+    }
+    return null;
+  }
+
+  Future<void> cacheCareAdvice(String plantName, CareAdvice care) async {
+    final db = await instance.database;
+    await db.insert(
+      AppConstants.tableCareCache,
+      {
+        'plant_name': plantName.toLowerCase(),
+        'care_json': jsonEncode(care.toJson()),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 

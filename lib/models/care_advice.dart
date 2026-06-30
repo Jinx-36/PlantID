@@ -14,15 +14,27 @@ class CareAdvice {
   });
 
   factory CareAdvice.fromJson(Map<String, dynamic> json) {
-    final attributes = json['attributes'];
+    // Check if it's from our new format (Gemini or Cache)
+    if (json.containsKey('watering')) {
+      return CareAdvice(
+        name: json['name'] ?? 'Unknown',
+        description: json['description'] ?? 'No description available.',
+        watering: json['watering'] ?? 'Not specified',
+        sunlight: json['sunlight'] ?? 'Not specified',
+        soil: json['soil'] ?? 'Not specified',
+      );
+    }
+
+    // Fallback for legacy OpenFarm format if still in DB
+    final attributes = json['attributes'] ?? json;
     return CareAdvice(
       name: attributes['name'] ?? 'Unknown',
       description: attributes['description'] ?? 'No description available.',
-      watering: attributes['sowing_method'] ?? 'Not specified',
-      sunlight: attributes['sun_requirements'] ?? 'Not specified',
+      watering: attributes['sowing_method'] ?? attributes['watering'] ?? 'Not specified',
+      sunlight: attributes['sun_requirements'] ?? attributes['sunlight'] ?? 'Not specified',
       soil: attributes['row_spacing'] != null
           ? 'Spacing: ${attributes['row_spacing']} cm'
-          : 'Not specified',
+          : (attributes['soil'] ?? 'Not specified'),
     );
   }
 

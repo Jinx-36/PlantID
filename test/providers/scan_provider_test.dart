@@ -4,27 +4,27 @@ import 'package:mockito/mockito.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plantid/providers/scan_provider.dart';
 import 'package:plantid/services/plantnet_service.dart';
-import 'package:plantid/services/openfarm_service.dart';
+import 'package:plantid/services/gemini_api_service.dart';
 import 'package:plantid/models/plant_result.dart';
 import 'package:plantid/models/care_advice.dart';
 
-@GenerateMocks([PlantNetService, OpenFarmService, Ref])
+@GenerateMocks([PlantNetService, GeminiApiService, Ref])
 import 'scan_provider_test.mocks.dart';
 
 void main() {
   late ScanNotifier scanNotifier;
   late MockPlantNetService mockPlantNetService;
-  late MockOpenFarmService mockOpenFarmService;
+  late MockGeminiApiService mockGeminiApiService;
   late MockRef mockRef;
 
   setUp(() {
     mockPlantNetService = MockPlantNetService();
-    mockOpenFarmService = MockOpenFarmService();
+    mockGeminiApiService = MockGeminiApiService();
     mockRef = MockRef();
-    scanNotifier = ScanNotifier(mockRef, mockPlantNetService, mockOpenFarmService);
+    scanNotifier = ScanNotifier(mockRef, mockPlantNetService, mockGeminiApiService);
   });
 
-  group('ScanProvider', () {
+  group('ScanProvider with Gemini', () {
     test('initial state is idle', () {
       expect(scanNotifier.state.isLoading, false);
       expect(scanNotifier.state.result, null);

@@ -3,8 +3,9 @@ import 'package:plantid/models/care_advice.dart';
 import 'package:plantid/models/plant_result.dart';
 import 'package:plantid/models/scan_record.dart';
 import 'package:plantid/providers/history_provider.dart';
+import 'package:plantid/services/database_service.dart';
 import 'package:plantid/services/image_service.dart';
-import 'package:plantid/services/openfarm_service.dart';
+import 'package:plantid/services/gemini_api_service.dart';
 import 'package:plantid/services/plantnet_service.dart';
 
 class ScanState {
@@ -28,15 +29,15 @@ class ScanState {
 }
 
 final scanProvider = StateNotifierProvider<ScanNotifier, ScanState>((ref) {
-  return ScanNotifier(ref, PlantNetService(), OpenFarmService());
+  return ScanNotifier(ref, PlantNetService(), GeminiApiService());
 });
 
 class ScanNotifier extends StateNotifier<ScanState> {
   final Ref _ref;
   final PlantNetService _plantNetService;
-  final OpenFarmService _openFarmService;
+  final GeminiApiService _geminiApiService;
 
-  ScanNotifier(this._ref, this._plantNetService, this._openFarmService) : super(ScanState.idle());
+  ScanNotifier(this._ref, this._plantNetService, this._geminiApiService) : super(ScanState.idle());
 
   Future<void> identifyPlant(String imagePath) async {
     state = ScanState.loading();
@@ -47,7 +48,15 @@ class ScanNotifier extends StateNotifier<ScanState> {
         return;
       }
 
-      final careAdvice = await _openFarmService.getCareAdvice(plantResult.commonName);
+      // Check cache first
+      CareAdvice? careAdvice = await DatabaseService.instance.getCachedCareAdvice(plantResult.commonName);
+
+      if (careAdvice == null) {
+        // Fetch from Gemini if not in cache
+        careAdvice = await _geminiApiService.getCareAdvice(plantResult.commonName);
+        // Save to cache
+        await DatabaseService.instance.cacheCareAdvice(plantResult.commonName, careAdvice);
+      }
 
       // Automatically save to history
       final savedPath = await ImageService.saveImageToDocs(imagePath);

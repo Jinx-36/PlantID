@@ -31,10 +31,18 @@ flutter pub get
 ```
 
 ### 4. API Configuration
-The app uses a public demo key for PlantNet in `lib/core/constants.dart`.
-If you want to use your own:
-1. Get a key from [PlantNet API](https://my.api.plantnet.org/).
-2. Replace `plantNetApiKey` in `lib/core/constants.dart`.
+To run the project, you must configure the following API keys in `lib/core/constants.dart`:
+
+#### PlantNet API (Required for Identification)
+1. The app comes with a public demo key for PlantNet.
+2. If you want to use your own, get a key from [PlantNet API](https://my.api.plantnet.org/).
+3. Replace `plantNetApiKey` in `lib/core/constants.dart`.
+
+#### Gemini API (Required for Care Details)
+1. Go to [Google AI Studio](https://aistudio.google.com/).
+2. Create a new API key.
+3. Open `lib/core/constants.dart`.
+4. Replace `YOUR_GEMINI_API_KEY_HERE` with your actual API key in the `geminiApiKey` constant.
 
 ---
 

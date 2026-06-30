@@ -9,7 +9,7 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
 import 'package:plantid/models/care_advice.dart' as _i2;
 import 'package:plantid/models/plant_result.dart' as _i6;
-import 'package:plantid/services/openfarm_service.dart' as _i7;
+import 'package:plantid/services/gemini_api_service.dart' as _i7;
 import 'package:plantid/services/plantnet_service.dart' as _i4;
 import 'package:riverpod/src/internals.dart' as _i3;
 
@@ -89,11 +89,11 @@ class MockPlantNetService extends _i1.Mock implements _i4.PlantNetService {
       ) as _i5.Future<_i6.PlantResult?>);
 }
 
-/// A class which mocks [OpenFarmService].
+/// A class which mocks [GeminiApiService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockOpenFarmService extends _i1.Mock implements _i7.OpenFarmService {
-  MockOpenFarmService() {
+class MockGeminiApiService extends _i1.Mock implements _i7.GeminiApiService {
+  MockGeminiApiService() {
     _i1.throwOnMissingStub(this);
   }
 
