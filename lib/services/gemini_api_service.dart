@@ -33,8 +33,10 @@ class GeminiApiService {
       );
 
       if (response.statusCode == 200) {
-        final text = response.data['candidates'][0]['content']['parts'][0]['text'];
-        final Map<String, dynamic> json = jsonDecode(text);
+        final text = response.data['candidates'][0]['content']['parts'][0]['text'] as String;
+        // Clean markdown formatting if present
+        final cleanText = text.replaceAll(RegExp(r'```json\n?'), '').replaceAll('```', '').trim();
+        final Map<String, dynamic> json = jsonDecode(cleanText);
         return CareAdvice(
           name: json['name'] ?? plantName,
           description: json['description'] ?? 'No description available.',
