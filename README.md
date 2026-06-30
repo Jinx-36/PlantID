@@ -67,6 +67,11 @@ To generate an APK file that you can install on your phone:
 
 ### How to install on your phone:
 1. Transfer the `app-debug.apk` file to your phone (via USB, Google Drive, email, etc.).
+2. **Permissions**: When you first use the app, it will ask for Camera and Gallery permissions.
+   - On Android 13+, it specifically asks for "Photos and Videos" permission for gallery access.
+   - If you deny these permissions, you can enable them later in your phone's App Settings for "PlantID".
+
+---
 2. On your phone, open a File Manager and find the APK.
 3. Tap the APK to install.
 4. **Important**: If prompted, allow "Installation from unknown sources" or "Trust this source" in your Android settings.
